@@ -8,7 +8,7 @@ class App extends Component {
     this.state = {
       value: '',
       history: [
-        {list: []}
+        {list: [], completed: []}
       ],
       current: 0
     };
@@ -25,14 +25,16 @@ class App extends Component {
     const history = this.state.history.slice(0, this.state.current + 1);
     const currentList = history[history.length - 1].list  
     const list = currentList.slice().concat([this.state.value]);
+    const completed = history[history.length -1].completed.slice()
     
     this.setState({
       value: '',
-      history: history.concat([{
-        list:list
-      }]),
+      history: history.concat([
+        {list:list, completed:completed}
+      ]),
       current: (this.state.current + 1)
     })
+    console.log(this.state.history[this.state.current])
     event.preventDefault()
   }
   
@@ -42,7 +44,6 @@ class App extends Component {
         current: this.state.current-1
       })
     }
-    // e.preventDefault()
   }
   
   Redo() {
@@ -52,17 +53,17 @@ class App extends Component {
         current: this.state.current+1
       })
     }
-    // e.preventDefault()
   }
   
   handleDelete(e, index) {
     console.log(index)
     const history = this.state.history.slice(0, this.state.current + 1);
     const currentList = history[history.length - 1].list.slice() 
-    currentList.splice(index, 1)
+    let completedItem = currentList.splice(index, 1)
+    const completed = history[history.length -1].completed.slice().concat([completedItem]);
     this.setState({
       history: history.concat([{
-        list:currentList
+        list:currentList, completed:completed
       }]),
       current: (this.state.current + 1)
     })
@@ -72,6 +73,7 @@ class App extends Component {
 
   render() {
     var list = this.state.history[this.state.current].list
+    var completed = this.state.history[this.state.current].completed
     var items = list.map((value, index) => (
       <li key={value}>
         <button onClick={(event) => this.handleDelete(event, index)}>
@@ -80,20 +82,34 @@ class App extends Component {
       </li>
     ))
     
+    var completedItems = completed.map((value, index) => (
+      <li key={value}>
+        {value}
+      </li>
+    ))
+
     return ( 
-     <div className="to-do-list-app">
-       <form onSubmit={this.handleSubmit}>
+      <div className="to-do-list-app">
+        <form onSubmit={this.handleSubmit}>
           <label>
             Add to List:
             <input type="text" value={this.state.value} onChange={this.handleChange} />
           </label>
           <input type="submit" value="Submit" />
-       </form>
-       <div>{items}</div>  
-       <div>
+        </form> 
+        <div>
           <button onClick={() => this.Undo()}>Undo</button>
           <button onClick={() => this.Redo()}>Redo</button>
-        </div>
+        </div> 
+        <label>
+          To Do:
+          <div>{items}</div>
+        </label> 
+        <label>
+          Completed:
+          <div>{completedItems}</div>
+        </label> 
+        
       </div>    
     );
   }
