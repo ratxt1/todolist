@@ -1,4 +1,8 @@
-class ToDoList extends React.Component {
+import React, { Component } from 'react';
+import logo from './logo.svg';
+import './App.css';
+
+class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -11,13 +15,6 @@ class ToDoList extends React.Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-  }
-  
-  renderList() {
-    // let list = this.state.history[this.state.current].slice()
-    // console.log(list)
-    
-    return <ul>{ items }</ul>
   }
 
   handleChange(event) {
@@ -39,23 +36,23 @@ class ToDoList extends React.Component {
     event.preventDefault()
   }
   
-  Undo(e) {
+  Undo() {
     if (this.state.current != 0) {
       this.setState({
         current: this.state.current-1
       })
     }
-    e.preventDefault()
+    // e.preventDefault()
   }
   
-  Redo(e) {
+  Redo() {
     if (this.state.current < this.state.history.length - 1) {
       console.log(this.state.history.length, this.state.current)
       this.setState({
         current: this.state.current+1
       })
     }
-    e.preventDefault()
+    // e.preventDefault()
   }
   
   handleDelete(e, index) {
@@ -74,8 +71,8 @@ class ToDoList extends React.Component {
   }
 
   render() {
-    let list = this.state.history[this.state.current].list
-    let items = list.map((value, index) => (
+    var list = this.state.history[this.state.current].list
+    var items = list.map((value, index) => (
       <li key={value}>
         <button onClick={(event) => this.handleDelete(event, index)}>
           {value}
@@ -102,7 +99,4 @@ class ToDoList extends React.Component {
   }
 }
 
-ReactDOM.render(
-  <ToDoList />,
-  document.getElementById('root')
-);
+export default App;
